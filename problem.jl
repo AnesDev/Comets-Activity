@@ -2,49 +2,34 @@ using ModelingToolkit
 using DomainSets
 using NeuralPDE
 
-params = Parameters.default_parameters()
+function build_problem(params, r_H, T_i_override, t_final)
 
-########################################
-# Domain
-########################################
+    x_min = 0.0
+    x_max = params.mantle_thickness
+    t_min = 0.0
+    t_max = t_final
 
-x_min = 0.0
-x_max = params.mantle_thickness
+    domains = [
+        x ∈ Interval(0.0, x_max),
+        t ∈ Interval(0.0, t_max)
+    ]
 
-t_min = 0.0
-t_max = params.t_final
+    bcs, N_scale, T_i, n_i_scaled, n_A_scaled = build_boundary_conditions(
+        params,
+        (x_A = x_min, x_B = x_max, t0 = t_min, t1 = t_max),
+        r_H;
+        T_i_override = T_i_override
+    )
 
-domains = [
-    x ∈ Interval(0.0, x_max),
-    t ∈ Interval(0.0, t_max)
-]
+    eq_heat, eq_gas = build_equations(params, N_scale)
+    equations = [eq_heat, eq_gas]
 
-########################################
-# Boundary / Initial Conditions (also gives us N_scale)
-########################################
-bcs, N_scale = build_boundary_conditions(
-    params,
-    (x_A = x_min, x_B = x_max, t0 = t_min, t1 = t_max),
-    100.0      # heliocentric distance (AU)
-)
+    println("eq types: ", typeof.(equations))
+    println("bc types: ", typeof.(bcs))
 
-########################################
-# Equations (needs N_scale from above)
-########################################
-eq_heat, eq_gas = build_equations(params, N_scale)
-equations = [eq_heat, eq_gas]
+    @named system = PDESystem(
+        equations, bcs, domains, [x, t], [T(x, t), n(x, t)]
+    )
 
-########################################
-# PDE System
-########################################
-
-println("eq types: ", typeof.(equations))
-println("bc types: ", typeof.(bcs))
-
-@named system = PDESystem(
-    equations,
-    bcs,
-    domains,
-    [x, t],
-    [T(x, t), n(x, t)]
-)
+    return system, N_scale, T_i, n_i_scaled, n_A_scaled, x_min, x_max, t_min, t_max
+end

@@ -107,12 +107,9 @@ for (i, _) in enumerate(sym_prob.loss_functions.pde_loss_functions)
 end
 
 println("BC losses:")
-println("BC[1] = IC Temperature")
-println("BC[2] = IC Density")
-println("BC[3] = Surface Energy")
-println("BC[4] = Ice Heat Flux")
-println("BC[5] = Ice Gas Flux")
-println("BC[6] = Surface Vacuum")
+println("BC[1] = Surface Energy")
+println("BC[2] = Ice Heat Flux")
+println("BC[3] = Ice Gas Flux")
 
 println("====================================")
 println()
