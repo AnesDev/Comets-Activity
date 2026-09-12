@@ -28,13 +28,12 @@ Returns
 -------
 (bcs, N_scale, T_i, n_i_scaled)
 """
-function build_boundary_conditions(params, domain, r_H)
+function build_boundary_conditions(params, domain, r_H; T_i_override=nothing)
 
     x_A, x_B, t0, t1 = domain.x_A, domain.x_B, domain.t0, domain.t1
 
-    T_i = 40.0  # TEMP TEST: was isothermal_equilibrium_temperature(r_H, params) = 28K. REVERT after comparing.
-    # temorarily removed
-    # T_i = isothermal_equilibrium_temperature(r_H, params)
+    T_i = T_i_override === nothing ? isothermal_equilibrium_temperature(r_H, params) : T_i_override
+
     n_i = sublimation_pressure(T_i, params) / (params.k_B * T_i)
 
     N_scale = n_i
@@ -50,12 +49,14 @@ function build_boundary_conditions(params, domain, r_H)
     # stuck flat for hundreds of iterations both before and after the
     # T_i fix).
 
+    solar_flux_scale = params.F_sun * (1 - params.A_bond) / r_H^2
+
     bc_surface = (
-        params.F_sun * (1 - params.A_bond) / r_H^2
-        + 4 * params.sigma_SB * params.eps_IR * params.T_OC^4
+        (params.F_sun * (1 - params.A_bond) / r_H^2
+        + 4 * params.sigma_SB * params.eps_IR * params.T_OC^4) / solar_flux_scale
         ~
-        4 * params.sigma_SB * params.eps_IR * T(x_A, t)^4
-        + 4 * conductivity(T(x_A, t), params) * Dx(T(x_A, t))
+        (4 * params.sigma_SB * params.eps_IR * T(x_A, t)^4
+        + 4 * conductivity(T(x_A, t), params) * Dx(T(x_A, t))) / solar_flux_scale
     )
 
     heat_flux_scale = params.latent_heat_CO * sublimation_flux(T_i, params)
@@ -92,6 +93,6 @@ function build_boundary_conditions(params, domain, r_H)
     n_small = 1e-6 * n_i
     n_A_scaled = n_small / N_scale
 
-    return [bc_surface, bc_heat_B, bc_gas_B], N_scale, T_i, n_i_scaled, n_A_scaled
+    return [bc_surface, bc_heat_B, bc_gas_B], N_scale, T_i, n_i_scaled, n_A_scaled, solar_flux_scale, heat_flux_scale, gas_flux_scale
 
 end

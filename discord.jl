@@ -34,10 +34,11 @@ function send_image(path; message="")
         @warn "Failed to send Discord image" exception=(err, catch_backtrace())
     end
 end
-function notify_start(problem, strategy)
+
+function notify_start(label, problem, strategy)
 
     send_message("""
-**Training Started**
+**Training Started [$label]**
 
 Problem: $problem
 
@@ -48,10 +49,9 @@ Started: $(Dates.now())
 
 end
 
-function notify_progress(iter, loss, elapsed)
-
+function notify_progress(label, iter, loss, elapsed)
     send_message("""
-**Training Update**
+**Training Update [$label]**
 
 Iteration: $iter
 
@@ -59,19 +59,18 @@ Loss: $(round(loss, sigdigits = 5))
 
 Elapsed: $(round(elapsed, digits = 1)) s
 """)
+end
+
+function notify_checkpoint(label, iter)
+
+    send_message("Checkpoint saved at iteration **$iter** **[$label]**")
 
 end
 
-function notify_checkpoint(iter)
-
-    send_message("Checkpoint saved at iteration **$iter**")
-
-end
-
-function notify_finish(loss, elapsed)
+function notify_finish(label, loss, elapsed)
 
     send_message("""
-**Training Finished**
+**Training Finished [$label]**
 
 Final Loss: $(round(loss, sigdigits = 5))
 
@@ -80,10 +79,10 @@ Elapsed: $(round(elapsed, digits = 1)) s
 
 end
 
-function notify_error(err)
+function notify_error(label, err)
 
     send_message("""
-**Training Crashed**
+**Training Crashed [$label]**
 
 $(typeof(err))
 
@@ -92,7 +91,7 @@ $(err)
 
 end
 
-function notify_loss_plot(iter, loss, losses)
+function notify_loss_plot(label, iter, loss, losses)
 
     p = plot_loss(losses)
 
@@ -103,7 +102,7 @@ function notify_loss_plot(iter, loss, losses)
     send_image(
         tmp;
         message = """
-**Loss Curve**
+**Loss Curve [$label]**
 
 Iteration: $iter
 
@@ -115,7 +114,7 @@ Loss: $(round(loss, sigdigits = 5))
 
 end
 
-function notify_solution_plot(iter, loss, plot)
+function notify_solution_plot(label, iter, loss, plot)
 
     tmp = tempname() * ".png"
 
@@ -124,7 +123,7 @@ function notify_solution_plot(iter, loss, plot)
     send_image(
         tmp;
         message = """
-**Solution**
+**Solution [$label]**
 
 Iteration: $iter
 
@@ -135,7 +134,8 @@ Loss: $(round(loss, sigdigits = 5))
     rm(tmp; force = true)
 
 end
-function notify_results(;
+
+function notify_results(label;
     solution = nothing,
     density = nothing,
     loss = nothing,
@@ -143,20 +143,19 @@ function notify_results(;
 )
 
     if loss !== nothing
-        send_image(loss; message = "**Final Loss Curve**")
+        send_image(loss; message = "**Final Loss Curve [$label]**")
     end
 
     if solution !== nothing
-        send_image(solution; message = "**Final Temperature Solution**")
+        send_image(solution; message = "**Final Temperature Solution [$label]**")
     end
 
     if density !== nothing
-        send_image(density; message = "**Final CO Density**")
+        send_image(density; message = "**Final CO Density [$label]**")
     end
 
     if residual !== nothing
-        send_image(residual; message = "**Residual Heatmap**")
+        send_image(residual; message = "**Residual Heatmap [$label]**")
     end
 
 end
-

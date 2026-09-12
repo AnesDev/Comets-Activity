@@ -14,14 +14,15 @@ function build_problem(params, r_H, T_i_override, t_final)
         t ∈ Interval(0.0, t_max)
     ]
 
-    bcs, N_scale, T_i, n_i_scaled, n_A_scaled = build_boundary_conditions(
-        params,
-        (x_A = x_min, x_B = x_max, t0 = t_min, t1 = t_max),
-        r_H;
-        T_i_override = T_i_override
-    )
+    bcs, N_scale, T_i, n_i_scaled, n_A_scaled, solar_flux_scale, heat_flux_scale, gas_flux_scale =
+        build_boundary_conditions(
+            params,
+            (x_A = x_min, x_B = x_max, t0 = t_min, t1 = t_max),
+            r_H;
+            T_i_override = T_i_override
+        )
 
-    eq_heat, eq_gas = build_equations(params, N_scale)
+    eq_heat, eq_gas, heat_eq_scale, gas_rate_scale = build_equations(params, N_scale, T_i)
     equations = [eq_heat, eq_gas]
 
     println("eq types: ", typeof.(equations))
@@ -31,5 +32,6 @@ function build_problem(params, r_H, T_i_override, t_final)
         equations, bcs, domains, [x, t], [T(x, t), n(x, t)]
     )
 
-    return system, N_scale, T_i, n_i_scaled, n_A_scaled, x_min, x_max, t_min, t_max
+    return system, N_scale, T_i, n_i_scaled, n_A_scaled, x_min, x_max, t_min, t_max,
+           heat_eq_scale, gas_rate_scale, solar_flux_scale, heat_flux_scale, gas_flux_scale
 end
