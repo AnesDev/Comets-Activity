@@ -3,7 +3,7 @@ using JSON3
 using Dates
 using Plots
 
-const WEBHOOK = "https://discord.com/api/webhooks/1524517919369859163/k7AT4QY-UK6CuNG8LgXPxwDdZJo5dvWLhhA2Lq-wjlzOTXb5orA65KXWIh28HQwDjR8U"
+const WEBHOOK = ""
 
 
 function send_message(msg)
