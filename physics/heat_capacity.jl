@@ -1,9 +1,5 @@
 """
-Specific heat capacity of water ice [J/(kg·K)].
-
-Arguments
----------
-T : Temperature [K]
+Specific heat capacity of water ice [J/(kg·K)]
 """
 
 function cp_ice(T)
@@ -18,11 +14,7 @@ end
 
 
 """
-Specific heat capacity of cometary dust [J/(kg·K)].
-
-Arguments
----------
-T : Temperature [K]
+Specific heat capacity of cometary dust [J/(kg·K)]
 """
 function cp_dust(T)
 
@@ -37,18 +29,12 @@ function cp_dust(T)
 end
 
 """
-Specific heat capacity of the comet mantle.
+Specific heat capacity of the comet mantle
 
 The mantle is assumed to consist of a 1:1 mixture of
 water ice and refractory dust.
 
 Arguments
----------
-T : Temperature [K]
-
-Returns
--------
-Specific heat capacity [J/(kg·K)]
 """
 function heat_capacity(T)
 

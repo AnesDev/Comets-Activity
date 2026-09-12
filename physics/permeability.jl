@@ -1,9 +1,5 @@
 """
 Permeability of the porous medium.
-
-Returns
--------
-Permeability [m²]
 """
 function permeability(params)
 

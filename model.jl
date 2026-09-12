@@ -31,9 +31,6 @@ function build_model(params, x_A, x_B, T_i, n_i_scaled, n_A_scaled)
 
         n_free = (1 .- envelope_t) .* n_i_scaled .+ envelope_t .* softplus.(n_raw)
 
-        # Hard BC4: linear ramp in x, same style as the t envelope.
-        # Exact 0 at x_A (n = n_A_scaled there for all t),
-        # exact 1 at x_B (n = n_free there, untouched).
         envelope_x = (x .- x_A) ./ (x_B .- x_A)
 
         n_scaled = n_A_scaled .+ envelope_x .* (n_free .- n_A_scaled)

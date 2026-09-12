@@ -1,9 +1,8 @@
 include("sublimation_pressure.jl")
 
 """
-Upper-limit CO sublimation mass flux, Eq. (4):
+Upper-limit CO sublimation mass flux:
     f_CO = P(T) * sqrt(m / (2 pi k_B T))
-Units: kg m^-2 s^-1.
 """
 function sublimation_flux(T, params)
     P = sublimation_pressure(T, params)

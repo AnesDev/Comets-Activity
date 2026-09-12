@@ -1,13 +1,5 @@
 """
-Thermal speed of CO molecules.
-
-Arguments
----------
-T : Temperature [K]
-
-Returns
--------
-Thermal speed [m/s]
+Thermal speed of CO molecules
 """
 function thermal_speed(T, params)
 
