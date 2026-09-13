@@ -18,8 +18,8 @@ Dx = Differential(x)
 
 function build_equations(params, N_scale, T_i)
 
-    heat_eq_scale = params.latent_heat_CO * sublimation_flux(T_i, params)
-
+    heat_eq_scale = params.latent_heat_CO * sublimation_flux(T_i, params) / params.mantle_thickness
+    
     eq_heat = (
         params.density *
         heat_capacity(T(x, t)) *
