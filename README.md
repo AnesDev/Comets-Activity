@@ -4,7 +4,9 @@ A Physics-Informed Neural Network (PINN) framework for modeling comet activity a
 
 ## Overview
 
-This internship project develops a neural network-based solver for simulating the thermal and gas diffusion processes occurring in cometary mantles. The framework solves coupled partial differential equations (PDEs) governing heat conduction and gas transport in cometary nuclei, with applications across multiple heliocentric distances (4 AU, 10 AU, and 100 AU from the Sun).
+This internship project develops a neural network-based solver for simulating the thermal and gas diffusion processes occurring in cometary mantles. The work focuses on modeling the physical systems described in [**"Cometary Activity Beyond The Planets"**](https://www.researchgate.net/publication/355843084_Cometary_Activity_Beyond_The_Planets), studying how comets remain active even at large distances from the Sun through coupled heat transport and gas sublimation mechanisms.
+
+The framework solves coupled partial differential equations to predict temperature and gas density profiles in cometary material under various thermal conditions.
 
 ### Key Features
 
@@ -255,4 +257,3 @@ This is an internship project focused on developing and validating Physics-Infor
 - **Physics**: Cometary physics, sublimation, and transport
 - **Scientific Computing**: Large-scale neural network training
 - **Software Engineering**: Modular Julia code design
-
