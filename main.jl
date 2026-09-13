@@ -18,7 +18,6 @@ include("boundary_conditions.jl")
 include("problem.jl")
 include("discretisation.jl")
 include("plots.jl")
-include("discord.jl")
 include("train.jl")
 
 mkpath("checkpoints")
@@ -41,8 +40,6 @@ for case in cases
 
     discretization = build_discretization(params, x_min, x_max, T_i, n_i_scaled, n_A_scaled)
 
-    notify_start(case.label, "Comet Activity r_H=$(case.r_H)AU", discretization.strategy)
-
     checkpoint_file = joinpath("checkpoints", "checkpoint_$(case.label).jls")
     result, losses, phi = run_training(
         system, discretization, N_scale, x_min, x_max, t_min, t_max,
@@ -64,6 +61,4 @@ for case in cases
     savefig(plot_density(xs, ts, log10.(n_pred)), dens_file)
     savefig(plot_loss(losses), loss_file)
 
-    notify_finish(case.label, losses[end], 0.0)
-    notify_results(case.label; solution = temp_file, density = dens_file, loss = loss_file)
 end

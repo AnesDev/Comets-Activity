@@ -79,12 +79,6 @@ function run_training(system, discretization, N_scale, x_min, x_max, t_min, t_ma
             iter_checkpoint_file = replace(checkpoint_file, ".jls" => "_iter$(length(losses)).jls")
             Serialization.serialize(iter_checkpoint_file, state.u)
             logprintln("checkpoint saved at iteration $(length(losses)) -> $iter_checkpoint_file")
-            notify_checkpoint(label, length(losses))
-        end
-
-        if length(losses) % 100 == 0
-            notify_progress(label, length(losses), loss, elapsed)
-            notify_loss_plot(label, length(losses), loss, losses)
         end
 
         return false
@@ -113,11 +107,8 @@ function run_training(system, discretization, N_scale, x_min, x_max, t_min, t_ma
         result = Optimization.solve(prob, LBFGS(), callback=callback, maxiters=400)
     catch err
         logprintln("LBFGS stopped early: $err")
-        notify_error(label, err)
     end
     Serialization.serialize(checkpoint_file, result.u)
-
-    notify_finish(label, losses[end], time() - start_time)
 
     close(io)
 
