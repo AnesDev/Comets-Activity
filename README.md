@@ -90,7 +90,7 @@ The framework runs three benchmark cases at different heliocentric distances:
 
 | Case | Heliocentric Distance | Initial Temperature | Simulation Time |
 |------|-----------------------|---------------------|-----------------|
-| 100 AU | 100 AU | 40 K | 10,000 seconds |
+| 100 AU | 100 AU | Computed | 10,000 seconds |
 | 10 AU | 10 AU | Computed | 150 seconds |
 | 4 AU | 4 AU | Computed | 100 seconds |
 
