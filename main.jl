@@ -24,7 +24,7 @@ mkpath("checkpoints")
 mkpath("results")
 
 cases = [
-    (r_H = 100.0, T_i = 40.0, t_final = 1e4,   label = "100au"),
+    # (r_H = 100.0, T_i = nothing, t_final = 1e4,   label = "100au"),
     (r_H = 10.0,  T_i = nothing, t_final = 150.0, label = "10au"),
     (r_H = 4.0,   T_i = nothing, t_final = 100.0, label = "4au"),
 ]
@@ -32,7 +32,7 @@ cases = [
 for case in cases
     println("========== Running r_H = $(case.r_H) AU ==========")
 
-    params = Parameters.default_parameters()
+    params = Parameters.Params(t_final = case.t_final)
 
     system, N_scale, T_i, n_i_scaled, n_A_scaled, x_min, x_max, t_min, t_max,
     heat_eq_scale, gas_rate_scale, solar_flux_scale, heat_flux_scale, gas_flux_scale =
