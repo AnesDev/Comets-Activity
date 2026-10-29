@@ -1,9 +1,6 @@
 include("physics/sublimation_pressure.jl")
 include("physics/sublimation_flux.jl")
 
-# NOTE: x, t, T, n, Dx, Dt are assumed already defined by equations.jl,
-# which must be `include`d before this file in your top-level script.
-
 function isothermal_equilibrium_temperature(r_H, params)
     lhs = params.F_sun * (1 - params.A_bond) / r_H^2
     T_i4 = lhs / (4 * params.sigma_SB * params.eps_IR) + params.T_OC^4
@@ -27,7 +24,7 @@ function build_boundary_conditions(params, domain, r_H; T_i_override=nothing)
     solar_flux_scale = params.F_sun * (1 - params.A_bond) / r_H^2
 
     bc_surface = (
-        (params.F_sun * (1 - params.A_bond) / r_H^2
+        (params.F_sun * (1 - params.A_bond) / r_H_of_t(t)^2
         + 4 * params.sigma_SB * params.eps_IR * params.T_OC^4) / solar_flux_scale
         ~
         (4 * params.sigma_SB * params.eps_IR * T(x_A, t)^4
@@ -60,7 +57,7 @@ function build_boundary_conditions(params, domain, r_H; T_i_override=nothing)
         sublimation_flux(T(x_B, t), params) / params.CO_molecular_mass / gas_flux_scale
     )
 
-
+    # TO CHANGE TO A MORE SCIENTIFIC PRECISE BC OF n AT X=A
     n_small = 1e-6 * n_i
     n_A_scaled = n_small / N_scale
 

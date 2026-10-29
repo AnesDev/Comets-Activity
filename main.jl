@@ -13,6 +13,7 @@ include("physics/knudsen_diffusion.jl")
 include("physics/sublimation_pressure.jl")
 include("physics/sublimation_flux.jl")
 
+include("Orbit/comet_orbit.jl")
 include("equations.jl")
 include("boundary_conditions.jl")
 include("problem.jl")
@@ -23,20 +24,25 @@ include("train.jl")
 mkpath("checkpoints")
 mkpath("results")
 
+const A_ORB, E_ORB = 51.0, 0.98
+
 cases = [
-    (r_H = 100.0, T_i = 40.0, t_final = 1e4,   label = "100au"),
-    (r_H = 10.0,  T_i = nothing, t_final = 150.0, label = "10au"),
-    (r_H = 4.0,   T_i = nothing, t_final = 100.0, label = "4au"),
+    (r_H0 = 100.0, t_final = 2.5e9,  label = "100au"),   # ends at ≈ 80 AU
+    (r_H0 = 10.0,  t_final = 4.4e7,  label = "10au"),    # ends at ≈ 6 AU
+    (r_H0 = 4.0,   t_final = 1.2e7,  label = "4au"),     # ends at ≈ 2.4 AU
 ]
 
 for case in cases
-    println("========== Running r_H = $(case.r_H) AU ==========")
+    println("========== Running r_H0 = $(case.r_H0) AU ==========")
 
-    params = Parameters.default_parameters()
+    ORBIT[] = (a = A_ORB, e = E_ORB,
+               M0 = initial_mean_anomaly(case.r_H0, A_ORB, E_ORB; inbound = true))
+
+    params = Parameters.Params(t_final = case.t_final)
 
     system, N_scale, T_i, n_i_scaled, n_A_scaled, x_min, x_max, t_min, t_max,
     heat_eq_scale, gas_rate_scale, solar_flux_scale, heat_flux_scale, gas_flux_scale =
-        build_problem(params, case.r_H, case.T_i, case.t_final)
+        build_problem(params, case.r_H0, nothing, case.t_final)
 
     discretization = build_discretization(params, x_min, x_max, T_i, n_i_scaled, n_A_scaled)
 
